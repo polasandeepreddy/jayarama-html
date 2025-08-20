@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Valuation Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            margin-top: 15px;
+        }
+
+        .btn-add:hover {
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            margin-top: 20px;
+        }
+
+        .btn-generate:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .boundaries {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e1e5e9;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .popup-header {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-popup:hover {
+            color: #e74c3c;
+        }
+
+        .generated-sentence {
+            background: linear-gradient(135deg, #d5f4e6, #c8e6c9);
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            font-style: italic;
+            color: #1b5e20;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
+        }
+
+        .building-item {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(255, 152, 0, 0.2);
+        }
+
+        .building-item .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .building-item .remove-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .doc-item {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .doc-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .doc-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .remove-doc-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-doc-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .boundaries {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .header {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .popup-content {
+                padding: 25px;
+                margin: 20px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success message */
+        .success-message {
+            background: linear-gradient(135deg, #d5f4e6, #c8e6c9);
+            border: 2px solid #27ae60;
+            color: #1b5e20;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Property Valuation Form</h1>
+            <p>Complete property assessment and documentation system</p>
+        </div>
+
+        <div class="form-container">
+            <form id="propertyForm">
+                <!-- Basic Information Section -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon">1</span>
+                        Basic Information
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="propertyType">Type of Property *</label>
+                            <select id="propertyType" required>
+                                <option value="">Select Property Type</option>
+                                <option value="Land and Buildings">Land and Buildings</option>
+                                <option value="Flat">Flat</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-col">
+                            <label for="inspectionDate">Date of Inspection *</label>
+                            <input type="date" id="inspectionDate" required>
+                        </div>
+                        
+                        <div class="form-col">
+                            <label for="valuationDate">Date of Valuation *</label>
+                            <input type="date" id="valuationDate" required>
+                            <div id="dateError" class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Documents Section -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon">2</span>
+                        Property Documents
+                    </h2>
+                    <div id="propertyDocsContainer">
+                        <div class="doc-item property-doc-item" data-doc-id="1">
+                            <div class="doc-header">
+                                <div class="doc-title">Property Document 1</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="selectDoc1">Select Document *</label>
+                                <select id="selectDoc1" class="doc-select" required>
+                                    <option value="">Select Document</option>
+                                    <option value="AOS">AOS</option>
+                                    <option value="SALE DEED">Sale Deed</option>
+                                    <option value="GIFT DEED">Gift Deed</option>
+                                    <option value="ANY DEED">Any Deed</option>
+                                </select>
+                            </div>
+
+                            <div id="docDetails1" class="doc-details"></div>
+                            <div id="generatedSentence1" class="generated-sentence hidden"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addPropertyDoc()">+ Add Property Document</button>
+                </div>
+
+                <!-- Approval Documents Section -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon">3</span>
+                        Approval Documents
+                    </h2>
+                    <div id="approvalDocsContainer">
+                        <div class="doc-item approval-doc-item" data-doc-id="1">
+                            <div class="doc-header">
+                                <div class="doc-title">Approval Document 1</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="approvalDoc1">Select Building Approval Document *</label>
+                                <select id="approvalDoc1" class="approval-select" required>
+                                    <option value="">Select Document</option>
+                                    <option value="SANCTION PLAN">Sanction Plan</option>
+                                    <option value="NO PLAN CASE">No Plan Case</option>
+                                    <option value="BPS/BRS">BPS/BRS</option>
+                                </select>
+                            </div>
+
+                            <div id="approvalDetails1" class="approval-details"></div>
+                            
+                            <div class="form-group">
+                                <label for="landApprovalDoc1">Select Land Approval Document</label>
+                                <select id="landApprovalDoc1" class="land-approval-select">
+                                    <option value="">Select Document</option>
+                                    <option value="LRS">LRS</option>
+                                    <option value="LAYOUT">Layout</option>
+                                    <option value="NALA">NALA</option>
+                                </select>
+                            </div>
+
+                            <div id="landApprovalDetails1" class="land-approval-details"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="addApprovalDoc()">+ Add Approval Document</button>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="btn submit-btn">Submit Property Valuation Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sanction Body Popup -->
+    <div id="sanctionBodyPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('sanctionBodyPopup')">&times;</span>
+            <div class="popup-header">Select Sanction Body</div>
+            <div class="form-group">
+                <label for="sanctionBodySelect">Sanction Body *</label>
+                <select id="sanctionBodySelect" required>
+                    <option value="">Select Sanction Body</option>
+                    <option value="GP">GP</option>
+                    <option value="DTCP">DTCP</option>
+                    <option value="GHMC DPMS">GHMC DPMS</option>
+                    <option value="HMDA DPMS">HMDA DPMS</option>
+                    <option value="TG BPASS">TG BPASS</option>
+                    <option value="GHMC-2016">GHMC-2016</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="selectSanctionBody()">Confirm Selection</button>
+        </div>
+    </div>
+
+    <!-- BPS/BRS Sanction Body Popup -->
+    <div id="bpsBrsPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('bpsBrsPopup')">&times;</span>
+            <div class="popup-header">Select BPS/BRS Sanction Body</div>
+            <div class="form-group">
+                <label for="bpsBrsSelect">Sanction Body *</label>
+                <select id="bpsBrsSelect" required>
+                    <option value="">Select Sanction Body</option>
+                    <option value="GHMC">GHMC</option>
+                    <option value="HMDA">HMDA</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="selectBpsBrsBody()">Confirm Selection</button>
+        </div>
+    </div>
+
+    <!-- Local Body Popup -->
+    <div id="localBodyPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('localBodyPopup')">&times;</span>
+            <div class="popup-header">Select Local Body</div>
+            <div class="form-group">
+                <label for="localBodySelect">Local Body *</label>
+                <select id="localBodySelect" required>
+                    <option value="">Select Local Body</option>
+                    <option value="GHMC">GHMC</option>
+                    <option value="CDMA">CDMA</option>
+                    <option value="GRAMPANCHAYATH">Grampanchayath</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="selectLocalBody()">Confirm Selection</button>
+        </div>
+    </div>
+
+    <!-- LRS Sanction Body Popup -->
+    <div id="lrsSanctionPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('lrsSanctionPopup')">&times;</span>
+            <div class="popup-header">Select LRS Sanction Body</div>
+            <div class="form-group">
+                <label for="lrsSanctionSelect">Sanction Body *</label>
+                <select id="lrsSanctionSelect" required>
+                    <option value="">Select Sanction Body</option>
+                    <option value="GHMC">GHMC</option>
+                    <option value="HMDA">HMDA</option>
+                    <option value="MUNICIPALITY">Municipality</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="selectLrsSanctionBody()">Confirm Selection</button>
+        </div>
+    </div>
+
+    <!-- Layout Sanction Body Popup -->
+    <div id="layoutSanctionPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('layoutSanctionPopup')">&times;</span>
+            <div class="popup-header">Select Layout Sanction Body</div>
+            <div class="form-group">
+                <label for="layoutSanctionSelect">Sanction Body *</label>
+                <select id="layoutSanctionSelect" required>
+                    <option value="">Select Sanction Body</option>
+                    <option value="HMDA FINAL LAYOUT">HMDA Final Layout</option>
+                    <option value="DTCP FINAL LAYOUT">DTCP Final Layout</option>
+                    <option value="GRAMPANCHAYATH LAYOUT">Grampanchayath Layout</option>
+                    <option value="DRAFT LAYOUT">Draft Layout</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="selectLayoutSanctionBody()">Confirm Selection</button>
+        </div>
+    </div>
+
+    <!-- Building Details Popup -->
+    <div id="buildingDetailsPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('buildingDetailsPopup')">&times;</span>
+            <div class="popup-header">Add Building Details</div>
+            <div class="form-group">
+                <label for="buildingName">Building Name *</label>
+                <input type="text" id="buildingName" required>
+            </div>
+            <div class="form-group">
+                <label for="numberOfFloors">Number of Floors *</label>
+                <input type="number" id="numberOfFloors" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="buildingArea">Area (in Sft) *</label>
+                <input type="number" id="buildingArea" min="1" required>
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button type="button" class="btn" onclick="addBuildingDetail()">Add Building</button>
+                <button type="button" class="btn btn-add" onclick="addMoreBuildings()">Add More Buildings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NALA Details Popup -->
+    <div id="nalaDetailsPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup('nalaDetailsPopup')">&times;</span>
+            <div class="popup-header">Enter NALA Details</div>
+            <div class="form-group">
+                <label for="nalaProceeding">Proceeding Number *</label>
+                <input type="text" id="nalaProceeding" required>
+            </div>
+            <div class="form-group">
+                <label for="nalaSyNo">SY NO *</label>
+                <input type="text" id="nalaSyNo" required>
+            </div>
+            <div class="form-group">
+                <label for="nalaSyExtent">SY NO Wise Extent (in numbers) *</label>
+                <input type="number" id="nalaSyExtent" step="0.01" required>
+            </div>
+            <button type="button" class="btn" onclick="addNalaDetails()">Add NALA Details</button>
+        </div>
+    </div>
+
+    <script>
+        let propertyDocCount = 1;
+        let approvalDocCount = 1;
+        let currentSanctionBodyTarget = '';
+        let currentBuildingTarget = '';
+        let currentBpsBrsTarget = '';
+        let currentLocalBodyTarget = '';
+        let currentLrsTarget = '';
+        let currentLayoutTarget = '';
+        let currentNalaTarget = '';
+        let buildingCount = 0;
+
+        // Location data
+        const locationData = {
+            "Telangana": {
+                "Hyderabad": {
+                    "Serilingampally": ["Kondapur", "Gachibowli", "Madhapur", "Miyapur"],
+                    "Kukatpally": ["Kukatpally", "Nizampet", "Bachupally", "Pragathi Nagar"],
+                    "Rajendranagar": ["Rajendranagar", "Shamshabad", "Chevella", "Moinabad"]
+                },
+                "Rangareddy": {
+                    "Shamshabad": ["Shamshabad", "Rajiv Gandhi International Airport", "Kothur"],
+                    "Chevella": ["Chevella", "Vikarabad Road", "Shankarpally"],
+                    "Ibrahimpatnam": ["Ibrahimpatnam", "Yacharam", "Pocharam"]
+                }
+            }
+        };
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Property type change
+            document.getElementById('propertyType').addEventListener('change', toggleFlatFields);
+            
+            // Date validation
+            document.getElementById('valuationDate').addEventListener('change', validateDates);
+            document.getElementById('inspectionDate').addEventListener('change', validateDates);
+        }
+
+        function validateDates() {
+            const inspectionDate = document.getElementById('inspectionDate').value;
+            const valuationDate = document.getElementById('valuationDate').value;
+            const errorDiv = document.getElementById('dateError');
+            
+            if (inspectionDate && valuationDate) {
+                if (new Date(valuationDate) < new Date(inspectionDate)) {
+                    errorDiv.textContent = 'Date of Valuation must be greater than or equal to Date of Inspection';
+                    document.getElementById('valuationDate').style.borderColor = '#e74c3c';
+                    return false;
+                } else {
+                    errorDiv.textContent = '';
+                    document.getElementById('valuationDate').style.borderColor = '#ddd';
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        function toggleFlatFields() {
+            const propertyType = document.getElementById('propertyType').value;
+            const flatFields = document.querySelectorAll('.flat-only');
+            
+            flatFields.forEach(field => {
+                if (propertyType === 'Flat') {
+                    field.classList.remove('hidden');
+                } else {
+                    field.classList.add('hidden');
+                }
+            });
+        }
+
+        function addPropertyDoc() {
+            propertyDocCount++;
+            const container = document.getElementById('propertyDocsContainer');
+            const newDoc = document.createElement('div');
+            newDoc.className = 'doc-item property-doc-item';
+            newDoc.setAttribute('data-doc-id', propertyDocCount);
+            newDoc.innerHTML = `
+                <div class="doc-header">
+                    <div class="doc-title">Property Document ${propertyDocCount}</div>
+                    <button type="button" class="remove-doc-btn" onclick="removePropertyDoc(${propertyDocCount})">Remove</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="selectDoc${propertyDocCount}">Select Document *</label>
+                    <select id="selectDoc${propertyDocCount}" class="doc-select" required>
+                        <option value="">Select Document</option>
+                        <option value="AOS">AOS</option>
+                        <option value="SALE DEED">Sale Deed</option>
+                        <option value="GIFT DEED">Gift Deed</option>
+                        <option value="ANY DEED">Any Deed</option>
+                    </select>
+                </div>
+                <div id="docDetails${propertyDocCount}" class="doc-details"></div>
+                <div id="generatedSentence${propertyDocCount}" class="generated-sentence hidden"></div>
+            `;
+            container.appendChild(newDoc);
+            
+            // Add event listener to new select
+            document.getElementById(`selectDoc${propertyDocCount}`).addEventListener('change', function() {
+                handleDocumentSelect(this, propertyDocCount);
+            });
+        }
+
+        function removePropertyDoc(docId) {
+            const docElement = document.querySelector(`[data-doc-id="${docId}"].property-doc-item`);
+            if (docElement) {
+                docElement.remove();
+            }
+        }
+
+        function addApprovalDoc() {
+            approvalDocCount++;
+            const container = document.getElementById('approvalDocsContainer');
+            const newDoc = document.createElement('div');
+            newDoc.className = 'doc-item approval-doc-item';
+            newDoc.setAttribute('data-doc-id', approvalDocCount);
+            newDoc.innerHTML = `
+                <div class="doc-header">
+                    <div class="doc-title">Approval Document ${approvalDocCount}</div>
+                    <button type="button" class="remove-doc-btn" onclick="removeApprovalDoc(${approvalDocCount})">Remove</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="approvalDoc${approvalDocCount}">Select Building Approval Document *</label>
+                    <select id="approvalDoc${approvalDocCount}" class="approval-select" required>
+                        <option value="">Select Document</option>
+                        <option value="SANCTION PLAN">Sanction Plan</option>
+                        <option value="NO PLAN CASE">No Plan Case</option>
+                        <option value="BPS/BRS">BPS/BRS</option>
+                    </select>
+                </div>
+                <div id="approvalDetails${approvalDocCount}" class="approval-details"></div>
+                
+                <div class="form-group">
+                    <label for="landApprovalDoc${approvalDocCount}">Select Land Approval Document</label>
+                    <select id="landApprovalDoc${approvalDocCount}" class="land-approval-select">
+                        <option value="">Select Document</option>
+                        <option value="LRS">LRS</option>
+                        <option value="LAYOUT">Layout</option>
+                        <option value="NALA">NALA</option>
+                    </select>
+                </div>
+                <div id="landApprovalDetails${approvalDocCount}" class="land-approval-details"></div>
+            `;
+            container.appendChild(newDoc);
+            
+            // Add event listeners
+            document.getElementById(`approvalDoc${approvalDocCount}`).addEventListener('change', function() {
+                handleApprovalSelect(this, approvalDocCount);
+            });
+            
+            document.getElementById(`landApprovalDoc${approvalDocCount}`).addEventListener('change', function() {
+                handleLandApprovalSelect(this, approvalDocCount);
+            });
+        }
+
+        function removeApprovalDoc(docId) {
+            const docElement = document.querySelector(`[data-doc-id="${docId}"].approval-doc-item`);
+            if (docElement) {
+                docElement.remove();
+            }
+        }
+
+        // Event delegation for document selects
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('doc-select')) {
+                const docId = e.target.id.replace('selectDoc', '');
+                handleDocumentSelect(e.target, docId);
+            }
+            
+            if (e.target.classList.contains('approval-select')) {
+                const docId = e.target.id.replace('approvalDoc', '');
+                handleApprovalSelect(e.target, docId);
+            }
+            
+            if (e.target.classList.contains('land-approval-select')) {
+                const docId = e.target.id.replace('landApprovalDoc', '');
+                handleLandApprovalSelect(e.target, docId);
+            }
+        });
+
+        function handleDocumentSelect(select, docId) {
+            const selectedDoc = select.value;
+            const detailsDiv = document.getElementById(`docDetails${docId}`);
+            
+            if (selectedDoc === 'AOS') {
+                detailsDiv.innerHTML = getAOSFields(docId);
+                setupLocationDropdowns(docId);
+            } else if (selectedDoc) {
+                detailsDiv.innerHTML = getOtherDocFields(docId);
+                setupLocationDropdowns(docId);
+            } else {
+                detailsDiv.innerHTML = '';
+            }
+            
+            // Re-apply property type logic
+            toggleFlatFields();
+        }
+
+        function handleApprovalSelect(select, docId) {
+            const selectedDoc = select.value;
+            const detailsDiv = document.getElementById(`approvalDetails${docId}`);
+            
+            if (selectedDoc === 'SANCTION PLAN') {
+                currentSanctionBodyTarget = `approvalDetails${docId}`;
+                document.getElementById('sanctionBodyPopup').style.display = 'block';
+            } else if (selectedDoc === 'NO PLAN CASE') {
+                currentLocalBodyTarget = `approvalDetails${docId}`;
+                document.getElementById('localBodyPopup').style.display = 'block';
+            } else if (selectedDoc === 'BPS/BRS') {
+                currentBpsBrsTarget = `approvalDetails${docId}`;
+                document.getElementById('bpsBrsPopup').style.display = 'block';
+            } else if (selectedDoc) {
+                detailsDiv.innerHTML = `<p>Details for ${selectedDoc} will be implemented based on requirements.</p>`;
+            } else {
+                detailsDiv.innerHTML = '';
+            }
+        }
+
+        function handleLandApprovalSelect(select, docId) {
+            const selectedDoc = select.value;
+            const detailsDiv = document.getElementById(`landApprovalDetails${docId}`);
+            
+            if (selectedDoc === 'LRS') {
+                currentLrsTarget = `landApprovalDetails${docId}`;
+                document.getElementById('lrsSanctionPopup').style.display = 'block';
+            } else if (selectedDoc === 'LAYOUT') {
+                currentLayoutTarget = `landApprovalDetails${docId}`;
+                document.getElementById('layoutSanctionPopup').style.display = 'block';
+            } else if (selectedDoc === 'NALA') {
+                currentNalaTarget = `landApprovalDetails${docId}`;
+                document.getElementById('nalaDetailsPopup').style.display = 'block';
+            } else if (selectedDoc) {
+                detailsDiv.innerHTML = `<p>Details for ${selectedDoc} will be implemented based on requirements.</p>`;
+            } else {
+                detailsDiv.innerHTML = '';
+            }
+        }
+
+        function setupLocationDropdowns(docId) {
+            const stateSelect = document.getElementById(`state${docId}`);
+            const districtSelect = document.getElementById(`district${docId}`);
+            const mandalSelect = document.getElementById(`mandal${docId}`);
+            const villageSelect = document.getElementById(`village${docId}`);
+
+            if (!stateSelect) return;
+
+            // Load Districts when State changes
+            stateSelect.addEventListener("change", function () {
+                districtSelect.innerHTML = '<option value="">Select District</option>';
+                mandalSelect.innerHTML = '<option value="">Select Mandal</option>';
+                villageSelect.innerHTML = '<option value="">Select Village</option>';
+
+                const districts = locationData[this.value];
+                if (districts) {
+                    Object.keys(districts).forEach(district => {
+                        districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
+                    });
+                }
+            });
+
+            // Load Mandals when District changes
+            districtSelect.addEventListener("change", function () {
+                mandalSelect.innerHTML = '<option value="">Select Mandal</option>';
+                villageSelect.innerHTML = '<option value="">Select Village</option>';
+
+                const mandals = locationData[stateSelect.value][this.value];
+                if (mandals) {
+                    Object.keys(mandals).forEach(mandal => {
+                        mandalSelect.innerHTML += `<option value="${mandal}">${mandal}</option>`;
+                    });
+                }
+            });
+
+            // Load Villages when Mandal changes
+            mandalSelect.addEventListener("change", function () {
+                villageSelect.innerHTML = '<option value="">Select Village</option>';
+
+                const villages = locationData[stateSelect.value][districtSelect.value][this.value];
+                if (villages) {
+                    villages.forEach(village => {
+                        villageSelect.innerHTML += `<option value="${village}">${village}</option>`;
+                    });
+                }
+            });
+        }
+
+        function getAOSFields(docId) {
+            return `
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Name of the Seller (vendor) *</label>
+                        <input type="text" id="seller${docId}" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Name of the Purchaser (vendee) *</label>
+                        <input type="text" id="purchaser${docId}" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Date of AOS *</label>
+                        <input type="date" id="aosDate${docId}" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Sale Consideration (in rupees) *</label>
+                        <input type="text" id="saleConsideration${docId}" placeholder="e.g., 10,00,000" required oninput="formatCurrency(this)">
+                    </div>
+                </div>
+
+                ${getLocationFields(docId)}
+                ${getPropertyDetailsFields(docId)}
+                ${getBoundariesFields(docId)}
+
+                <button type="button" class="btn btn-generate" onclick="generateSentence(${docId})">Generate Sentence</button>
+            `;
+        }
+
+        function getOtherDocFields(docId) {
+            return `
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Name of the Owner (vendee) *</label>
+                        <input type="text" id="owner${docId}" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Doc No *</label>
+                        <input type="text" id="docNo${docId}" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Date of Registration *</label>
+                        <input type="date" id="regDate${docId}" required>
+                    </div>
+                    <div class="form-col">
+                        <label>SRO Name *</label>
+                        <input type="text" id="sroName${docId}" required>
+                    </div>
+                </div>
+
+                ${getLocationFields(docId)}
+                ${getPropertyDetailsFields(docId)}
+                ${getBoundariesFields(docId)}
+
+                <button type="button" class="btn btn-generate" onclick="generateSentence(${docId})">Generate Sentence</button>
+            `;
+        }
+
+        function getLocationFields(docId) {
+            return `
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>State *</label>
+                        <select id="state${docId}" required>
+                            <option value="">Select State</option>
+                            <option value="Telangana">Telangana</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label>District *</label>
+                        <select id="district${docId}" required>
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Mandal *</label>
+                        <select id="mandal${docId}" required>
+                            <option value="">Select Mandal</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label>Village *</label>
+                        <select id="village${docId}" required>
+                            <option value="">Select Village</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getPropertyDetailsFields(docId) {
+            return `
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Colony</label>
+                        <input type="text" id="colony${docId}">
+                    </div>
+                    <div class="form-col">
+                        <label>SY.NO *</label>
+                        <input type="text" id="syNo${docId}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Plot No *</label>
+                        <input type="text" id="plotNo${docId}" required>
+                    </div>
+                    <div class="form-col">
+                        <label>House No *</label>
+                        <input type="text" id="houseNo${docId}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col flat-only">
+                        <label>Flat No</label>
+                        <input type="text" id="flatNo${docId}">
+                    </div>
+                    <div class="form-col">
+                        <label>Extent (in numbers) *</label>
+                        <input type="number" id="extent${docId}" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col flat-only">
+                        <label>Extent (UDS) (in numbers)</label>
+                        <input type="number" id="extentUDS${docId}" step="0.01">
+                    </div>
+                    <div class="form-col flat-only">
+                        <label>Total Extent (in numbers)</label>
+                        <input type="number" id="totalExtent${docId}" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col flat-only">
+                        <label>SBUA (in numbers)</label>
+                        <input type="number" id="sbua${docId}" step="0.01">
+                    </div>
+                </div>
+            `;
+        }
+
+        function getBoundariesFields(docId) {
+            return `
+                <div class="form-group">
+                    <label>Boundaries of Land</label>
+                    <div class="boundaries">
+                        <div>
+                            <label>North:</label>
+                            <input type="text" id="northLand${docId}">
+                        </div>
+                        <div>
+                            <label>South:</label>
+                            <input type="text" id="southLand${docId}">
+                        </div>
+                        <div>
+                            <label>East:</label>
+                            <input type="text" id="eastLand${docId}">
+                        </div>
+                        <div>
+                            <label>West:</label>
+                            <input type="text" id="westLand${docId}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group flat-only">
+                    <label>Boundaries of Flat</label>
+                    <div class="boundaries">
+                        <div>
+                            <label>North:</label>
+                            <input type="text" id="northFlat${docId}">
+                        </div>
+                        <div>
+                            <label>South:</label>
+                            <input type="text" id="southFlat${docId}">
+                        </div>
+                        <div>
+                            <label>East:</label>
+                            <input type="text" id="eastFlat${docId}">
+                        </div>
+                        <div>
+                            <label>West:</label>
+                            <input type="text" id="westFlat${docId}">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectSanctionBody() {
+            const selectedBody = document.getElementById('sanctionBodySelect').value;
+            if (selectedBody && currentSanctionBodyTarget) {
+                const detailsDiv = document.getElementById(currentSanctionBodyTarget);
+                detailsDiv.innerHTML = getSanctionBodyFields(selectedBody);
+                closePopup('sanctionBodyPopup');
+            }
+        }
+
+        function selectBpsBrsBody() {
+            const selectedBody = document.getElementById('bpsBrsSelect').value;
+            if (selectedBody && currentBpsBrsTarget) {
+                const detailsDiv = document.getElementById(currentBpsBrsTarget);
+                detailsDiv.innerHTML = getBpsBrsFields(selectedBody);
+                closePopup('bpsBrsPopup');
+            }
+        }
+
+        function selectLocalBody() {
+            const selectedBody = document.getElementById('localBodySelect').value;
+            if (selectedBody && currentLocalBodyTarget) {
+                const detailsDiv = document.getElementById(currentLocalBodyTarget);
+                detailsDiv.innerHTML = getLocalBodyFields(selectedBody);
+                closePopup('localBodyPopup');
+            }
+        }
+
+        function selectLrsSanctionBody() {
+            const selectedBody = document.getElementById('lrsSanctionSelect').value;
+            if (selectedBody && currentLrsTarget) {
+                const detailsDiv = document.getElementById(currentLrsTarget);
+                detailsDiv.innerHTML = getLrsFields(selectedBody);
+                closePopup('lrsSanctionPopup');
+            }
+        }
+
+        function selectLayoutSanctionBody() {
+            const selectedBody = document.getElementById('layoutSanctionSelect').value;
+            if (selectedBody && currentLayoutTarget) {
+                const detailsDiv = document.getElementById(currentLayoutTarget);
+                detailsDiv.innerHTML = getLayoutFields(selectedBody);
+                closePopup('layoutSanctionPopup');
+            }
+        }
+
+        function getSanctionBodyFields(sanctionBody) {
+            let commonFields = `
+                <div class="form-row">
+                    <div class="form-col">
+                        <label>Date *</label>
+                        <input type="date" required>
+                    </div>
+                    <div class="form-col">
+                        <label>Valid Upto *</label>
+                        <input type="date" required>
+                    </div>
+                </div>
+                <div id="buildingsContainer${buildingCount}" class="buildings-container">
+                    <label>Sanction Buildings and Floors</label>
+                    <button type="button" class="btn" onclick="openBuildingPopup('buildingsContainer${buildingCount}')">Add Building Details</button>
+                </div>
+            `;
+
+            let specificFields = '';
+
+            switch(sanctionBody) {
+                case 'GP':
+                    specificFields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>File No/Permit No/Proceeding No/Application No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Issued By *</label>
+                                <select required>
+                                    <option value="">Select Grampanchayath</option>
+                                    <option value="GP1">Grampanchayath 1</option>
+                                    <option value="GP2">Grampanchayath 2</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'DTCP':
+                    specificFields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>File No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Permit No/Proceeding No *</label>
+                                <input type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="DISTRICT TOWN AND COUNTRY PLANNING OFFICER, (_________)" required>
+                        </div>
+                    `;
+                    break;
+
+                case 'GHMC DPMS':
+                case 'GHMC-2016':
+                    specificFields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>File No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Permit No/Proceeding No *</label>
+                                <input type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="GHMC" readonly>
+                        </div>
+                    `;
+                    break;
+
+                case 'HMDA DPMS':
+                    specificFields = `
+                        <div class="form-group">
+                            <label>Application No/Proceeding No *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="HMDA" readonly>
+                        </div>
+                    `;
+                    break;
+
+                case 'TG BPASS':
+                    specificFields = `
+                        <div class="form-group">
+                            <label>Application No/Proceeding No *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="TG BPASS, ___________ (MUNICIPALITY/ MUNICIPAL CORPORATION)" required>
+                        </div>
+                    `;
+                    break;
+            }
+
+            buildingCount++;
+            return specificFields + commonFields;
+        }
+
+        function getBpsBrsFields(sanctionBody) {
+            let fields = '';
+            
+            switch(sanctionBody) {
+                case 'GHMC':
+                    fields = `
+                        <div class="form-group">
+                            <label>Proceeding No *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="GHMC" readonly>
+                        </div>
+                        <div id="buildingsContainer${buildingCount}" class="buildings-container">
+                            <label>Regularized/Penalized Buildings and Floors</label>
+                            <button type="button" class="btn" onclick="openBuildingPopup('buildingsContainer${buildingCount}')">Add Building Details</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'HMDA':
+                    fields = `
+                        <div class="form-group">
+                            <label>Proceeding No *</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="HMDA" readonly>
+                        </div>
+                        <div id="buildingsContainer${buildingCount}" class="buildings-container">
+                            <label>Regularized/Penalized Buildings and Floors</label>
+                            <button type="button" class="btn" onclick="openBuildingPopup('buildingsContainer${buildingCount}')">Add Building Details</button>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            buildingCount++;
+            return fields;
+        }
+
+        function getLocalBodyFields(localBody) {
+            let fields = '';
+            
+            switch(localBody) {
+                case 'GHMC':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>PTI No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Door No *</label>
+                                <input type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Name *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Paid To *</label>
+                                <input type="text" value="GHMC" readonly>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'CDMA':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>PTI No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Door No *</label>
+                                <input type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Name *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Paid To *</label>
+                                <input type="text" value="CDMA" readonly>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'GRAMPANCHAYATH':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Assessment No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Door No *</label>
+                                <input type="text" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Name *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Paid To *</label>
+                                <select required>
+                                    <option value="">Select Grampanchayath</option>
+                                    <option value="GP1">Grampanchayath 1</option>
+                                    <option value="GP2">Grampanchayath 2</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            return fields;
+        }
+
+        function getLrsFields(sanctionBody) {
+            let fields = '';
+            
+            switch(sanctionBody) {
+                case 'GHMC':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Proceeding No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Issued By *</label>
+                                <input type="text" value="GHMC" readonly>
+                            </div>
+                            <div class="form-col">
+                                <label>Extent *</label>
+                                <input type="number" step="0.01" required>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'HMDA':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Proceeding No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Issued By *</label>
+                                <input type="text" value="HMDA" readonly>
+                            </div>
+                            <div class="form-col">
+                                <label>Extent *</label>
+                                <input type="number" step="0.01" required>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'MUNICIPALITY':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Proceeding No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Issued By *</label>
+                                <select required>
+                                    <option value="">Select Municipality</option>
+                                    <option value="Municipality 1">Municipality 1</option>
+                                    <option value="Municipality 2">Municipality 2</option>
+                                </select>
+                            </div>
+                            <div class="form-col">
+                                <label>Extent *</label>
+                                <input type="number" step="0.01" required>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            return fields;
+        }
+
+        function getLayoutFields(sanctionBody) {
+            let fields = '';
+            
+            switch(sanctionBody) {
+                case 'HMDA FINAL LAYOUT':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Permit/Proceeding/File/Letter/Application No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="HMDA" readonly>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'DTCP FINAL LAYOUT':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Permit/Proceeding/File/Letter/Application No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" value="DTCP" readonly>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'GRAMPANCHAYATH LAYOUT':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Permit/Proceeding/File/Letter/Application No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <select required>
+                                <option value="">Select Grampanchayath</option>
+                                <option value="GP1">Grampanchayath 1</option>
+                                <option value="GP2">Grampanchayath 2</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'DRAFT LAYOUT':
+                    fields = `
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label>Permit/Proceeding/File/Letter/Application No *</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-col">
+                                <label>Date *</label>
+                                <input type="date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Issued By *</label>
+                            <input type="text" required>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            return fields;
+        }
+
+        function openBuildingPopup(targetContainer) {
+            currentBuildingTarget = targetContainer;
+            document.getElementById('buildingDetailsPopup').style.display = 'block';
+        }
+
+        function addBuildingDetail() {
+            const buildingName = document.getElementById('buildingName').value;
+            const numberOfFloors = document.getElementById('numberOfFloors').value;
+            const buildingArea = document.getElementById('buildingArea').value;
+
+            if (buildingName && numberOfFloors && buildingArea && currentBuildingTarget) {
+                const container = document.getElementById(currentBuildingTarget);
+                const buildingDiv = document.createElement('div');
+                buildingDiv.className = 'building-item';
+                buildingDiv.innerHTML = `
+                    <button type="button" class="remove-btn" onclick="this.parentElement.remove()">&times;</button>
+                    <strong>Building:</strong> ${buildingName}<br>
+                    <strong>Floors:</strong> ${numberOfFloors}<br>
+                    <strong>Area:</strong> ${buildingArea} Sft
+                `;
+                container.appendChild(buildingDiv);
+
+                // Clear form
+                document.getElementById('buildingName').value = '';
+                document.getElementById('numberOfFloors').value = '';
+                document.getElementById('buildingArea').value = '';
+
+                closePopup('buildingDetailsPopup');
+            }
+        }
+
+        function addMoreBuildings() {
+            addBuildingDetail();
+            // Keep popup open for more entries
+            document.getElementById('buildingDetailsPopup').style.display = 'block';
+        }
+
+        function addNalaDetails() {
+            const proceeding = document.getElementById('nalaProceeding').value;
+            const syNo = document.getElementById('nalaSyNo').value;
+            const syExtent = document.getElementById('nalaSyExtent').value;
+
+            if (proceeding && syNo && syExtent && currentNalaTarget) {
+                const container = document.getElementById(currentNalaTarget);
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label>Proceeding Number:</label>
+                        <input type="text" value="${proceeding}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>SY NO:</label>
+                        <input type="text" value="${syNo}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>SY NO Wise Extent:</label>
+                        <input type="number" value="${syExtent}" readonly>
+                    </div>
+                `;
+
+                // Clear form
+                document.getElementById('nalaProceeding').value = '';
+                document.getElementById('nalaSyNo').value = '';
+                document.getElementById('nalaSyExtent').value = '';
+
+                closePopup('nalaDetailsPopup');
+            }
+        }
+
+        function generateSentence(docId) {
+            const docType = document.getElementById(`selectDoc${docId}`).value;
+            let sentence = '';
+            
+            if (docType === 'AOS') {
+                const seller = document.getElementById(`seller${docId}`).value;
+                const purchaser = document.getElementById(`purchaser${docId}`).value;
+                const aosDate = document.getElementById(`aosDate${docId}`).value;
+                
+                if (seller && purchaser && aosDate) {
+                    sentence = `Copy of ${docType} dated: ${aosDate}, executed in between ${seller} and ${purchaser}`;
+                }
+            } else if (docType) {
+                const regDate = document.getElementById(`regDate${docId}`).value;
+                const owner = document.getElementById(`owner${docId}`).value;
+                
+                if (owner && regDate) {
+                    sentence = `Copy of ${docType} dated: ${regDate}, in favor of ${owner}`;
+                }
+            }
+            
+            const sentenceDiv = document.getElementById(`generatedSentence${docId}`);
+            if (sentence) {
+                sentenceDiv.textContent = sentence;
+                sentenceDiv.classList.remove('hidden');
+            } else {
+                alert('Please fill in all required fields to generate the sentence.');
+            }
+        }
+
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+
+        function formatCurrency(input) {
+            let value = input.value.replace(/,/g, '');
+            if (value && !isNaN(value)) {
+                input.value = parseInt(value).toLocaleString('en-IN');
+            }
+        }
+
+        // Form submission
+        document.getElementById('propertyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            if (!validateDates()) {
+                alert('Please fix the date validation errors before submitting.');
+                return;
+            }
+            
+            // Show success message
+            const submitSection = document.querySelector('.submit-section');
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = '✅ Form submitted successfully! (This is a demo - no actual submission occurred)';
+            submitSection.appendChild(successDiv);
+            
+            // Scroll to success message
+            successDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Close popups when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('popup')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
